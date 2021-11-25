@@ -1,18 +1,16 @@
 export const data = {
   headContent: {
-    title: 'We are Metaplex',
-    subtitle: 'About Us',
+    title: 'BANGEROOO looks rare',
+    subtitle: 'Bangerooo',
     bannerImage: '/main-banner.png',
   },
   leftContent: undefined,
   midContent: {
     sections: [
       {
-        title: 'Metaplex is a protocol built on top of Solana that allows:',
+        title: 'Bangerooo',
         paragraphs: [
-          '• Creating/Minting non-fungible tokens;',
-          '• Starting a variety of auctions for primary/secondary sales;',
-          '• and Visualizing NFTs in a standard way across wallets and applications.',
+          'looks rare - artworks from the alien girl'
         ],
         image: '/main-banner.png',
       },
