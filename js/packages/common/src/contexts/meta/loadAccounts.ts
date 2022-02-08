@@ -110,21 +110,22 @@ export const pullYourMetadata = async (
   let currBatch: string[] = [];
   let batches = [];
   const editions = [];
+
   for (let i = 0; i < userTokenAccounts.length; i++) {
     if (userTokenAccounts[i].info.amount.toNumber() == 1) {
-      if (2 + currBatch.length > MULTIPLE_ACCOUNT_BATCH_SIZE) {
+      const edition = await getEdition(
+        userTokenAccounts[i].info.mint.toBase58(),
+      );
+      const newAdd = [
+        await getMetadata(userTokenAccounts[i].info.mint.toBase58()),
+        edition,
+      ];
+      editions.push(edition);
+      currBatch = currBatch.concat(newAdd);
+
+      if (2 + currBatch.length >= MULTIPLE_ACCOUNT_BATCH_SIZE) {
         batches.push(currBatch);
         currBatch = [];
-      } else {
-        const edition = await getEdition(
-          userTokenAccounts[i].info.mint.toBase58(),
-        );
-        const newAdd = [
-          await getMetadata(userTokenAccounts[i].info.mint.toBase58()),
-          edition,
-        ];
-        editions.push(edition);
-        currBatch = currBatch.concat(newAdd);
       }
     }
   }
@@ -351,9 +352,9 @@ export const pullPack = async ({
     );
   }
 
-  const metadataKeys = Object.values(state.packCardsByPackSet[packSetKey]).map(
-    ({ info }) => info.metadata,
-  );
+  const metadataKeys = Object.values(
+    state.packCardsByPackSet[packSetKey] || {},
+  ).map(({ info }) => info.metadata);
   const newState = await pullMetadataByKeys(connection, state, metadataKeys);
 
   await pullEditions(
@@ -363,7 +364,7 @@ export const pullPack = async ({
     metadataKeys.map(m => newState.metadataByMetadata[m]),
   );
 
-  return state;
+  return newState;
 };
 
 export const pullAuctionSubaccounts = async (
